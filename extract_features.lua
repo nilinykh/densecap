@@ -81,20 +81,26 @@ local function main()
   local D = 4096 -- TODO this is specific to VG
   local all_boxes = torch.FloatTensor(N, M, 4):zero()
   local all_feats = torch.FloatTensor(N, M, D):zero()
+  local all_scores = torch.FloatTensor(N, M, 15, 512):zero()
+  local all_captions = {}
   
   -- Actually run the model
   for i, image_path in ipairs(image_paths) do
     print(string.format('Processing image %d / %d', i, N))
-    local boxes, feats = run_image(model, image_path, opt, dtype)
+    local boxes, feats, scores = run_image(model, image_path, opt, dtype)
     all_boxes[i]:copy(boxes[{{1, M}}])
     all_feats[i]:copy(feats[{{1, M}}])
+    all_scores[i]:copy(scores[{{1, M, 512}}])
+    table.insert(all_captions, captions)
   end
 
   -- Write data to the HDF5 file
   local h5_file = hdf5.open(opt.output_h5)
   h5_file:write('/feats', all_feats)
   h5_file:write('/boxes', all_boxes)
+  h5_file:write('/scores', all_scores)
   h5_file:close()
+  utils.write_json(paths.concat(opt.output_vis_dir, 'results.json'), all_captions)
 end
 
 main()
