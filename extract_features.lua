@@ -102,7 +102,7 @@ local function main()
   h5_file:write('/boxes', all_boxes)
   h5_file:write('/scores', all_scores)
   h5_file:close()
-  utils.write_json(paths.concat(opt.output_vis_dir, 'results.json'), all_captions)
+  --utils.write_json(paths.concat(opt.output_vis_dir, 'results.json'), all_captions)
 end
 
 main()
