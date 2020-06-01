@@ -291,6 +291,11 @@ end
 
 
 function LM:sample(image_vectors)
+  
+  local lstm_layer = self.rnn:get(1)
+  local view_layer = self.rnn:get(2)
+  local seq_scores = torch.FloatTensor(N, T, 512)
+  
   local N, T = image_vectors:size(1), self.seq_length
   local seq = torch.LongTensor(N, T):zero()
   local softmax = nn.SoftMax():type(image_vectors:type())
@@ -323,6 +328,10 @@ function LM:sample(image_vectors)
       words = seq[{{}, {t-1, t-1}}]
     end
     local wordvecs = self.lookup_table:forward(words)
+    
+    lstm_output = lstm_layer:forward(wordvecs)
+    view_output = view_layer:forward(lstm_output)
+    
     local scores = self.rnn:forward(wordvecs):view(N, -1)
     local idx = nil
     if self.sample_argmax then
@@ -332,6 +341,7 @@ function LM:sample(image_vectors)
       idx = torch.multinomial(probs, 1):view(-1):long()
     end
     seq[{{}, t}]:copy(idx)
+    seq_scores[{{}, t, {}}]:copy(view_output)
   end
 
   -- After sampling stop remembering states
@@ -343,7 +353,8 @@ function LM:sample(image_vectors)
     end
   end
 
-  self.output = seq
+  --self.output = seq
+  self.output = seq_scores
   return self.output
 end
 
