@@ -291,14 +291,14 @@ end
 
 
 function LM:sample(image_vectors)
-  
-  local lstm_layer = self.rnn:get(1)
-  local view_layer = self.rnn:get(2)
-  local seq_scores = torch.FloatTensor(N, T, 512)
-  
+
   local N, T = image_vectors:size(1), self.seq_length
   local seq = torch.LongTensor(N, T):zero()
   local softmax = nn.SoftMax():type(image_vectors:type())
+
+  local lstm_layer = self.rnn:get(1)
+  local view_layer = self.rnn:get(2)
+  local seq_scores = torch.FloatTensor(N, T, 512)
   
   -- During sampling we want our LSTM modules to remember states
   for i = 1, #self.rnn do
@@ -330,8 +330,10 @@ function LM:sample(image_vectors)
     local wordvecs = self.lookup_table:forward(words)
     
     lstm_output = lstm_layer:forward(wordvecs)
+    -- 1000 x 1 x 512
     view_output = view_layer:forward(lstm_output)
-    
+    -- 1000 x 512
+
     local scores = self.rnn:forward(wordvecs):view(N, -1)
     local idx = nil
     if self.sample_argmax then

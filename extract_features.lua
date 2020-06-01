@@ -38,9 +38,9 @@ local function run_image(model, img_path, opt, dtype)
   vgg_mean = vgg_mean:view(1, 3, 1, 1):expand(1, 3, H, W)
   img_caffe:add(-1, vgg_mean)
 
-  local boxes_xcycwh, feats = model:extractFeatures(img_caffe:type(dtype))
+  local boxes_xcycwh, feats, scores = model:extractFeatures(img_caffe:type(dtype))
   local boxes_xywh = box_utils.xcycwh_to_xywh(boxes_xcycwh)
-  return boxes_xywh, feats
+  return boxes_xywh, feats, scores
 end
 
 
@@ -88,9 +88,11 @@ local function main()
   for i, image_path in ipairs(image_paths) do
     print(string.format('Processing image %d / %d', i, N))
     local boxes, feats, scores = run_image(model, image_path, opt, dtype)
+    --print(scores)
     all_boxes[i]:copy(boxes[{{1, M}}])
     all_feats[i]:copy(feats[{{1, M}}])
     all_scores[i]:copy(scores[{{1, M, 512}}])
+    --print(all_scores[i])
     table.insert(all_captions, captions)
   end
 

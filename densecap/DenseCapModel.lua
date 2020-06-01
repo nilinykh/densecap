@@ -289,8 +289,10 @@ function DenseCapModel:extractFeatures(input)
   self.nets.localization_layer:setImageSize(H, W)
 
   local output = self.net:forward(input)
+  --print(output)
   local final_boxes_float = output[4]:float()
   local class_scores_float = output[1]:float()
+  local lang_scores_float = output[5]:float()
   local boxes_scores = torch.FloatTensor(final_boxes_float:size(1), 5)
   local boxes_x1y1x2y2 = box_utils.xcycwh_to_x1y1x2y2(final_boxes_float)
   boxes_scores[{{}, {1, 4}}]:copy(boxes_x1y1x2y2)
@@ -299,8 +301,10 @@ function DenseCapModel:extractFeatures(input)
 
   local boxes_xcycwh = final_boxes_float:index(1, idx):typeAs(self.output[4])
   local feats = self.nets.recog_base.output:float():index(1, idx):typeAs(self.output[4])
+  local scores = lang_scores_float:index(1, idx):typeAs(self.output[5])
+  --print(scores)
 
-  return boxes_xcycwh, feats
+  return boxes_xcycwh, feats, scores
 end
 
 
