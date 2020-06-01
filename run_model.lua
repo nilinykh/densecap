@@ -74,7 +74,8 @@ function run_image(model, img_path, opt, dtype)
   img_caffe:add(-1, vgg_mean)
 
   -- Run the model forward
-  local boxes, scores, captions = model:forward_test(img_caffe:type(dtype))
+  --local boxes, scores, captions = model:forward_test(img_caffe:type(dtype))
+  local boxes, scores, lstm_scores = model:forward_test(img_caffe:type(dtype))
   local boxes_xywh = box_utils.xcycwh_to_xywh(boxes)
 
   local out = {
