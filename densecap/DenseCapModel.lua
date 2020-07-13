@@ -302,9 +302,10 @@ function DenseCapModel:extractFeatures(input)
   local boxes_xcycwh = final_boxes_float:index(1, idx):typeAs(self.output[4])
   local feats = self.nets.recog_base.output:float():index(1, idx):typeAs(self.output[4])
   local scores = lang_scores_float:index(1, idx):typeAs(self.output[5])
-  --print(scores)
 
-  return boxes_xcycwh, feats, scores
+  local captions = self.nets.language_model:decodeSequence(scores)
+
+  return boxes_xcycwh, feats, captions
 end
 
 

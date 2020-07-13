@@ -356,7 +356,7 @@ function LM:sample(image_vectors)
   end
 
   --self.output = seq
-  self.output = seq_scores
+  self.output = seq
   return self.output
 end
 

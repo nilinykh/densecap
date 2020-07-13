@@ -88,21 +88,21 @@ local function main()
   for i, image_path in ipairs(image_paths) do
     print(string.format('Processing image %d / %d', i, N))
     local boxes, feats, scores = run_image(model, image_path, opt, dtype)
-    --print(scores)
-    all_boxes[i]:copy(boxes[{{1, M}}])
-    all_feats[i]:copy(feats[{{1, M}}])
-    all_scores[i]:copy(scores[{{1, M, 512}}])
-    --print(all_scores[i])
-    table.insert(all_captions, captions)
+    --all_boxes[i]:copy(boxes[{{1, M}}])
+    --all_feats[i]:copy(feats[{{1, M}}])
+    --all_scores[i]:copy(scores[{{1, M, 512}}])
+    scores.img_name = paths.basename(image_path)
+    table.insert(all_captions, scores)
+
   end
 
   -- Write data to the HDF5 file
-  local h5_file = hdf5.open(opt.output_h5)
-  h5_file:write('/feats', all_feats)
-  h5_file:write('/boxes', all_boxes)
-  h5_file:write('/scores', all_scores)
-  h5_file:close()
-  --utils.write_json(paths.concat(opt.output_vis_dir, 'results.json'), all_captions)
+  --local h5_file = hdf5.open(opt.output_h5)
+  --h5_file:write('/feats', all_feats)
+  --h5_file:write('/boxes', all_boxes)
+  --h5_file:write('/scores', all_scores)
+  --h5_file:close()
+  utils.write_json(paths.concat('/home/nikolai/densecap', 'results_test.json'), all_captions)
 end
 
 main()
