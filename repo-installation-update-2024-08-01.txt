@@ -10,5 +10,6 @@ git config --global url."https://".insteadOf git://
   - https://stackoverflow.com/questions/50322675/init-lua389-module-hdf5-not-foundno-luarocks-module-found-for-hdf5
   - https://github.com/google-deepmind/torch-hdf5/issues/70#issuecomment-235994412
   - https://github.com/google-deepmind/torch-hdf5/issues/76#issuecomment-357379520
+- Symlink libcudnn files, mine were in x86 etc
 
 - Do not forget to update extraction scripts, LanguageModel.lua in your container's repository - I copied scripts from my github repo.
