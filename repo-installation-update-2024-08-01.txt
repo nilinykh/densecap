@@ -1,0 +1,14 @@
+This is a description of how I installed DenseCap on merl. Could not make it run on GPU somehow...
+
+- Use Docker container and follow the guide here, https://hub.docker.com/r/jainal09/densecap_gpu
+- For stnbhwd I have my own fork from https://github.com/Moodstocks/stnbhwd
+- Run the commands below before installing stnbhwd with lua (from https://github.com/torch/threads/issues/97#issuecomment-505421565)
+git config --global url."https://github.com/".insteadOf git@github.com:
+git config --global url."https://".insteadOf git://
+- For problems with CUDNN versions, https://github.com/soumith/cudnn.torch/issues/359#issuecomment-316443893
+- hdf5 installation
+  - https://stackoverflow.com/questions/50322675/init-lua389-module-hdf5-not-foundno-luarocks-module-found-for-hdf5
+  - https://github.com/google-deepmind/torch-hdf5/issues/70#issuecomment-235994412
+  - https://github.com/google-deepmind/torch-hdf5/issues/76#issuecomment-357379520
+
+- Do not forget to update extraction scripts, LanguageModel.lua in your container's repository - I copied scripts from my github repo.
